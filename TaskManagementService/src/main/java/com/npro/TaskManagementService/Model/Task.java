@@ -44,8 +44,8 @@ public class Task {
 
     public void setCompletedDate(LocalDate completedDate) {
 
-        if(completedDate.isBefore(this.dueDate) || dueDate ==null) {
-            throw new IllegalArgumentException("Completed date cannot be before due date");
+        if(completedDate != null && completedDate.isBefore(this.createdDate)) {
+            throw new IllegalArgumentException("Completed date cannot be before created date");
         }
         this.completedDate = completedDate;
     }

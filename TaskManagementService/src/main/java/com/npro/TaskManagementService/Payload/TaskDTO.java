@@ -13,9 +13,10 @@ public class TaskDTO {
 
     private String taskName;
     private String description;
-
     private TaskStatus status;
-    private String GUID;
+    private String guid;
     private LocalDate dueDate;
     private LocalDate completedDate;
+    private LocalDate createdDate;
+    private LocalDate updatedDate;
 }

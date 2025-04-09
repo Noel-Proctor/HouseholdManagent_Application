@@ -30,11 +30,17 @@ public class TaskTest {
     @Test
     void testValidTaskCreate(){
         Task task = new Task();
-        task.setGuid(UUID.randomUUID().toString());
+        String guid = UUID.randomUUID().toString();
+        task.setGuid(guid);
         task.setStatus(TaskStatus.TO_DO);
         task.setCreatedDate(LocalDate.now());
         task.setDescription("Test Description");
         task.setDueDate(LocalDate.now().plusDays(1));
+
+        assertEquals("Task Guid", guid, task.getGuid());
+        assertEquals("task status", TaskStatus.TO_DO, task.getStatus());
+        assertEquals("Task description", "Test Description", task.getDescription());
+        assertEquals("Task Due Date", LocalDate.now().plusDays(1), task.getDueDate());
     }
 
     @Test
@@ -82,12 +88,12 @@ public class TaskTest {
     @Test()
     void testCompletedDateInvalid(){
         Task task = new Task();
-        task.setDueDate(LocalDate.now());
+        task.setCreatedDate(LocalDate.now());
 
         IllegalArgumentException thrown = assertThrows(IllegalArgumentException.class, () -> {
             task.setCompletedDate(LocalDate.now().minusDays(1));
         });
-        assertEquals("Testing completed date", "Completed date cannot be before due date", thrown.getMessage());
+        assertEquals("Testing completed date", "Completed date cannot be before created date", thrown.getMessage());
 
     }
 
