@@ -1,0 +1,7 @@
+package com.npro.BudgetManagementService.Model;
+
+public enum ExpenseType {
+
+    GROCERIES, RENT, MORTGAGE, HOUSEHOLD_COSTS, DINING, ENTERTAINMENT, TRANSPORT, HEALTHCARE, DEBT,
+    INVESTMENT, SAVINGS, OTHER
+}

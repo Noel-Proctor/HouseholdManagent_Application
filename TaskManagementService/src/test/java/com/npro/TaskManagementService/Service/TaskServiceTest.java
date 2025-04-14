@@ -3,6 +3,7 @@ package com.npro.TaskManagementService.Service;
 import com.npro.TaskManagementService.Model.Task;
 import com.npro.TaskManagementService.Model.TaskStatus;
 import com.npro.TaskManagementService.Payload.TaskDTO;
+import com.npro.TaskManagementService.Payload.TaskResponsePOJO;
 import com.npro.TaskManagementService.Repositories.TaskRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -53,7 +54,7 @@ public class TaskServiceTest {
         savedTask.setTaskName("test_task");
         savedTask.setDescription("Test Description");
         savedTask.setDueDate(LocalDate.now().plusDays(1));
-        savedTask.setGuid(UUID.randomUUID().toString());
+        savedTask.setGuid(UUID.randomUUID());
         savedTask.setStatus(TaskStatus.TO_DO);
         savedTask.setCreatedDate(LocalDate.now());
 
@@ -61,7 +62,7 @@ public class TaskServiceTest {
         savedTaskDTO.setTaskName("test_task");
         savedTaskDTO.setDescription("Test Description");
         savedTaskDTO.setDueDate(LocalDate.now().plusDays(1));
-        savedTaskDTO.setGuid(UUID.randomUUID().toString());
+        savedTaskDTO.setGuid(UUID.randomUUID());
         savedTaskDTO.setStatus(TaskStatus.TO_DO);
         savedTaskDTO.setCreatedDate(LocalDate.now());
 
@@ -74,7 +75,8 @@ public class TaskServiceTest {
 
     @Test
     void testValidCreateTask(){
-        TaskDTO result = taskService.createTask(taskDTO);
+        TaskResponsePOJO response = taskService.createTask(taskDTO);
+        TaskDTO result = response.getTask();
         assert(result.getGuid().equals(savedTaskDTO.getGuid()));
         assert(result.getStatus().equals(savedTaskDTO.getStatus()));
         assert(result.getCreatedDate().equals(savedTaskDTO.getCreatedDate()));
@@ -84,10 +86,10 @@ public class TaskServiceTest {
     }
 
 
-    @Test
-    void testInvalidTaskCreate(){
-
-    }
+//    @Test
+//    void testInvalidTaskCreate(){
+//
+//    }
 
 
 

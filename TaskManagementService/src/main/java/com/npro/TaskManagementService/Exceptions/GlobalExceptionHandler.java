@@ -22,5 +22,12 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(apiResponse, HttpStatus.INTERNAL_SERVER_ERROR);
 
     }
+
+    @ExceptionHandler(NotFound.class)
+    public ResponseEntity<APIResponse> resourceNotFoundExceptionHandler(NotFound e){
+        System.out.println(e.getMessage());
+        APIResponse apiResponse = new APIResponse(e.getMessage(), false);
+        return new ResponseEntity<>(apiResponse, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
 }
 

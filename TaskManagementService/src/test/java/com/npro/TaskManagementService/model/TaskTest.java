@@ -30,7 +30,7 @@ public class TaskTest {
     @Test
     void testValidTaskCreate(){
         Task task = new Task();
-        String guid = UUID.randomUUID().toString();
+        UUID guid = UUID.randomUUID();
         task.setGuid(guid);
         task.setStatus(TaskStatus.TO_DO);
         task.setCreatedDate(LocalDate.now());
@@ -47,7 +47,7 @@ public class TaskTest {
     void testInvalidTaskNameExceedsMaxLength(){
         Task task = new Task();
         task.setTaskName("This task name is longer than 100 characters. This task name is longer than 100 characters. Lets make is longer.");
-        task.setGuid(UUID.randomUUID().toString());
+        task.setGuid(UUID.randomUUID());
         Set<ConstraintViolation<Task>> violations = validator.validate(task);
 
         assertThat(violations).isNotEmpty();
@@ -59,7 +59,7 @@ public class TaskTest {
     @Test
     void testInvalidTaskNameIsNull(){
         Task task = new Task();
-        task.setGuid(UUID.randomUUID().toString());
+        task.setGuid(UUID.randomUUID());
         Set<ConstraintViolation<Task>> violations = validator.validate(task);
 
         assertThat(violations).isNotEmpty();
@@ -81,7 +81,7 @@ public class TaskTest {
         assertThat(violations).isNotEmpty();
         assertThat(violations).anyMatch(violation->
                 violation.getPropertyPath().toString().equals("guid")
-        && violation.getMessage().equals("must not be blank"));
+        && violation.getMessage().equals("must not be null"));
     }
 
 
