@@ -1,20 +1,17 @@
 package com.npro.BudgetManagementService.Payload;
-
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.List;
+
 
 @Data
-@AllArgsConstructor
 @NoArgsConstructor
 public class BudgetResponse {
-
-
+    private String message;
     private BudgetDTO budget;
 
-    private List<IncomeResponse> incomeList;
-
-    private List<ExpenseResponse> expenseList;
+    public BudgetResponse(String message, BudgetDTO budget) {
+        this.message = message;
+        this.budget = budget;
+    }
 }
