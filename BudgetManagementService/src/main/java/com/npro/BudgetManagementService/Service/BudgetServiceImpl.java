@@ -3,6 +3,7 @@ package com.npro.BudgetManagementService.Service;
 import com.npro.BudgetManagementService.Exceptions.NotFoundException;
 import com.npro.BudgetManagementService.Model.Budget;
 import com.npro.BudgetManagementService.Model.Expense;
+import com.npro.BudgetManagementService.Model.Income;
 import com.npro.BudgetManagementService.Payload.*;
 import com.npro.BudgetManagementService.Repositories.BudgetRepository;
 import com.npro.BudgetManagementService.Repositories.ExpenseRepository;
@@ -37,10 +38,12 @@ public class BudgetServiceImpl implements BudgetService {
         Budget budget = modelMapper.map(budgetDTO, Budget.class);
         budget.setCreatedOn(LocalDate.now());
         budget.setGuid(UUID.randomUUID().toString());
-
+        Budget newBudget = budgetRepository.save(budget);
 
         BudgetResponse response = new BudgetResponse("Budget successfully created",
-                modelMapper.map(budget, BudgetDTO.class));
+                modelMapper.map(newBudget, BudgetDTO.class));
+
+
         return response;
     }
 
@@ -72,8 +75,6 @@ public class BudgetServiceImpl implements BudgetService {
         BudgetResponse response = new BudgetResponse("Budget Found", modelMapper.map(budget.get(), BudgetDTO.class));
         return response;
     }
-
-
 
     @Override
     public BudgetPage getBudgetPage(Integer pageNumber, Integer pageSize, String sortBy, String direction) {
@@ -115,7 +116,6 @@ public class BudgetServiceImpl implements BudgetService {
 
     }
 
-
     @Override
     public APIResponse removeExpenseFromBudget(String budgetGuid, String expenseGuid) {
 
@@ -137,7 +137,6 @@ public class BudgetServiceImpl implements BudgetService {
         return new APIResponse("Expense Successfully Removed", true);
 
     }
-
 
     @Override
     public APIResponse updateExpenseOnBudget(String budgetGuid, ExpenseDTO expenseDTO) {
@@ -167,4 +166,31 @@ public class BudgetServiceImpl implements BudgetService {
         return new APIResponse("Expense Successfully Updated", true);
 
     }
+
+    @Override
+    public APIResponse addIncomeToBudget(String budgetGuid, IncomeDTO incomeDTO) {
+
+        Budget budget = budgetRepository.findByGuid(budgetGuid).orElseThrow(
+                ()->new NotFoundException("Budget Not Found"));
+
+        Income income = modelMapper.map(incomeDTO, Income.class);
+        income.setCreatedOn(LocalDate.now());
+        income.setGuid(UUID.randomUUID().toString());
+        budget.addIncome(income);
+        budgetRepository.save(budget);
+
+        return new APIResponse("Income Successfully Added", true);
+    }
+
+    @Override
+    public APIResponse removeIncomeFromBudget(String budgetGuid, String incomeGuid) {
+        return null;
+    }
+
+    @Override
+    public APIResponse updateIncomeOnBudget(String budgetGuid, IncomeDTO income) {
+        return null;
+    }
+
+
 }

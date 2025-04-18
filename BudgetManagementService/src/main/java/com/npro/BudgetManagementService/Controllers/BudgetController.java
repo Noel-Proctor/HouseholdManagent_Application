@@ -2,7 +2,6 @@ package com.npro.BudgetManagementService.Controllers;
 
 import com.npro.BudgetManagementService.Config.AppConstants;
 import com.npro.BudgetManagementService.Payload.*;
-import com.npro.BudgetManagementService.Repositories.BudgetRepository;
 import com.npro.BudgetManagementService.Service.BudgetService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -72,4 +71,9 @@ public class BudgetController {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
+    @PostMapping("income/add/{guid}")
+    public ResponseEntity<APIResponse> addIncome(@PathVariable String guid, @RequestBody IncomeDTO incomeDTO){
+        APIResponse response = budgetService.addIncomeToBudget(guid, incomeDTO);
+        return new ResponseEntity<>(response, HttpStatus.CREATED);
+    }
 }

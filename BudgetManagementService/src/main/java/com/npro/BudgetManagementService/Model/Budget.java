@@ -62,7 +62,6 @@ public class Budget {
     @FutureOrPresent
     private LocalDate updatedOn;
 
-
     public void addToTotalCost(double amount){
         setTotalCosts(getTotalCosts() + amount);
         setBalance();
@@ -88,6 +87,20 @@ public class Budget {
         setBalance();
         expenses.remove(expense);
         expense.setBudget(null);
+    }
+
+    public void addIncome(Income income){
+        setTotalIncome(getTotalIncome() + income.getAmount());
+        setBalance();
+        incomes.add(income);
+        income.setBudget(this);
+    }
+
+    public void removeIncome(Income income){
+        setTotalIncome(getTotalIncome() - income.getAmount());
+        setBalance();
+        incomes.remove(income);
+        income.setBudget(null);
     }
 
 }

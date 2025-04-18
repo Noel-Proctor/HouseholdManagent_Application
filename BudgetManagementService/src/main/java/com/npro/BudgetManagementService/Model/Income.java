@@ -39,6 +39,9 @@ public class Income {
     private IncomeType incomeType;
 
     @NotNull
+    private String guid;
+
+    @NotNull
     private LocalDate incomeDate;
 
     @FutureOrPresent
