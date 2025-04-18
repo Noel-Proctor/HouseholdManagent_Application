@@ -2,9 +2,8 @@ package com.npro.BudgetManagementService.Exceptions;
 
 import com.npro.BudgetManagementService.Payload.APIResponse;
 import jakarta.validation.ConstraintViolationException;
-import org.springframework.data.crossstore.ChangeSetPersister;
+import org.springframework.transaction.TransactionSystemException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 @RestControllerAdvice
@@ -29,10 +28,19 @@ public class GlobalExceptionHandler {
                       constraint.getPropertyPath().toString()).append(
                               ": ").append(constraint.getMessage()).append(System.lineSeparator())
                 );
-
-
-
         return new APIResponse(builder.toString(), false);
+    }
+
+
+    @ExceptionHandler(TransactionSystemException.class)
+    public APIResponse transactionSystemExceptionHandler(TransactionSystemException e){
+
+        if(e.getRootCause() instanceof ConstraintViolationException){
+            APIResponse response = constraintViolationExceptionHandler((ConstraintViolationException) e.getRootCause());
+            return response;
+        }
+
+        return new APIResponse("There was an error. Please contact your administrator", false);
     }
 
     @ExceptionHandler(NotFoundException.class)

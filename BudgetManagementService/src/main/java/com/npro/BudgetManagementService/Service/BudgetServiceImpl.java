@@ -2,13 +2,11 @@ package com.npro.BudgetManagementService.Service;
 
 import com.npro.BudgetManagementService.Exceptions.NotFoundException;
 import com.npro.BudgetManagementService.Model.Budget;
-import com.npro.BudgetManagementService.Payload.APIResponse;
-import com.npro.BudgetManagementService.Payload.BudgetDTO;
-import com.npro.BudgetManagementService.Payload.BudgetPage;
-import com.npro.BudgetManagementService.Payload.BudgetResponse;
+import com.npro.BudgetManagementService.Model.Expense;
+import com.npro.BudgetManagementService.Payload.*;
 import com.npro.BudgetManagementService.Repositories.BudgetRepository;
+import com.npro.BudgetManagementService.Repositories.ExpenseRepository;
 import org.modelmapper.ModelMapper;
-import org.springframework.cglib.core.Local;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -25,10 +23,12 @@ public class BudgetServiceImpl implements BudgetService {
 
     private final ModelMapper modelMapper;
     private final BudgetRepository budgetRepository;
+    private final ExpenseRepository expenseRepository;
 
-    public BudgetServiceImpl(ModelMapper modelMapper, BudgetRepository budgetRepository) {
+    public BudgetServiceImpl(ModelMapper modelMapper, BudgetRepository budgetRepository, ExpenseRepository expenseRepository) {
         this.modelMapper = modelMapper;
         this.budgetRepository = budgetRepository;
+        this.expenseRepository = expenseRepository;
     }
 
     @Override
@@ -37,7 +37,7 @@ public class BudgetServiceImpl implements BudgetService {
         Budget budget = modelMapper.map(budgetDTO, Budget.class);
         budget.setCreatedOn(LocalDate.now());
         budget.setGuid(UUID.randomUUID().toString());
-        Budget newBudget = budgetRepository.save(budget);
+
 
         BudgetResponse response = new BudgetResponse("Budget successfully created",
                 modelMapper.map(budget, BudgetDTO.class));
@@ -95,5 +95,76 @@ public class BudgetServiceImpl implements BudgetService {
         budgetPage.setLastPage(page.isLast());
         budgetPage.setTotalElements(page.getNumberOfElements());
         return budgetPage;
+    }
+
+    @Override
+    public APIResponse addExpenseToBudget(String guid, ExpenseDTO expense_In) {
+
+        Budget budget = budgetRepository.findByGuid(guid).orElseThrow(
+                ()-> new NotFoundException("Budget not found"));
+
+        Expense expense = modelMapper.map(expense_In, Expense.class);
+        expense.setCreatedOn(LocalDate.now());
+        expense.setGuid(UUID.randomUUID().toString());
+
+        budget.addExpense(expense);
+        budget.addToTotalCost(expense.getAmount());
+        budgetRepository.save(budget);
+
+        return new APIResponse("Expense Successfully Added", true);
+
+    }
+
+
+    @Override
+    public APIResponse removeExpenseFromBudget(String budgetGuid, String expenseGuid) {
+
+        Budget budget = budgetRepository.findByGuid(budgetGuid).orElseThrow(
+                ()-> new NotFoundException("Budget Not Found")
+        );
+
+        Expense expense = expenseRepository.findByGuid(expenseGuid).orElseThrow(
+                ()-> new NotFoundException("Expense not found")
+        );
+
+        if(!budget.getExpenses().contains(expense)) {
+            throw new NotFoundException("Expense does not belong to this budget");
+        }
+
+        budget.removeExpense(expense);
+        budgetRepository.save(budget);
+
+        return new APIResponse("Expense Successfully Removed", true);
+
+    }
+
+
+    @Override
+    public APIResponse updateExpenseOnBudget(String budgetGuid, ExpenseDTO expenseDTO) {
+
+        Budget budget = budgetRepository.findByGuid(budgetGuid).orElseThrow(
+                ()-> new NotFoundException("Budget Not Found")
+        );
+
+        Expense expense = expenseRepository.findByGuid(expenseDTO.getGuid()).orElseThrow(
+                ()-> new NotFoundException("Expense not found")
+        );
+
+        double originalExpenseAmount = expense.getAmount();
+        expense.setUpdatedOn(LocalDate.now());
+        expense.setExpenseType(expenseDTO.getExpenseType());
+
+        double delta = expenseDTO.getAmount() - originalExpenseAmount;
+        expense.setAmount(expenseDTO.getAmount());
+        expense.setDescription(expenseDTO.getDescription());
+        expense.setName(expenseDTO.getName());
+
+        expenseRepository.save(expense);
+
+        budget.addToTotalCost(delta);
+        budgetRepository.save(budget);
+
+        return new APIResponse("Expense Successfully Updated", true);
+
     }
 }

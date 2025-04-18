@@ -1,10 +1,5 @@
 package com.npro.BudgetManagementService.Service;
-
-
-import com.npro.BudgetManagementService.Payload.APIResponse;
-import com.npro.BudgetManagementService.Payload.BudgetDTO;
-import com.npro.BudgetManagementService.Payload.BudgetPage;
-import com.npro.BudgetManagementService.Payload.BudgetResponse;
+import com.npro.BudgetManagementService.Payload.*;
 
 public interface BudgetService {
     BudgetResponse createNewBudget(BudgetDTO budgetDTO);
@@ -14,4 +9,12 @@ public interface BudgetService {
     BudgetResponse getBudgetByGuid(String guid);
 
     BudgetPage getBudgetPage(Integer pageNumber, Integer pageSize, String sortBy, String direction);
+
+    APIResponse addExpenseToBudget(String budgetGuid, ExpenseDTO expense);
+
+    APIResponse removeExpenseFromBudget(String budgetGuid, String expenseGuid);
+
+    APIResponse updateExpenseOnBudget(String budgetGuid, ExpenseDTO expense);
+
+
 }

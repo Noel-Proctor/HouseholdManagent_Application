@@ -19,7 +19,10 @@ public class Expense {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long Id;
 
-    @ManyToOne
+    @NotNull
+    private String guid;
+
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "budget_id")
     private Budget budget;
 
@@ -35,8 +38,14 @@ public class Expense {
     @NotNull
     private LocalDate expenseDate;
 
+    public void setAmount(
+            @NotNull
+            @DecimalMin(value = "0.0", message = "Total value of expense cannot be less that 0.01") Double amount) {
+        this.amount = amount;
+    }
+
     @NotNull
-    @DecimalMin("0.01")
+    @DecimalMin(value = "0.0", message = "Total value of expense cannot be less that 0.01")
     private Double amount;
 
     @NotNull

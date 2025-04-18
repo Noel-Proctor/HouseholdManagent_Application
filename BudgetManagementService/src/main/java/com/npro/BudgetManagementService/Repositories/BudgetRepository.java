@@ -14,4 +14,5 @@ public interface BudgetRepository extends JpaRepository<Budget, Long> {
      void deleteByGuid(String guid);
 
     Optional<Budget> findByGuid(String guid);
+
 }
