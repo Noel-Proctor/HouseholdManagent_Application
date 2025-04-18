@@ -16,5 +16,7 @@ public class IncomeDTO {
     private Double amount;
     private IncomeType incomeType;
     private LocalDate incomeDate;
+    private String guid;
+    private String name;
 
 }

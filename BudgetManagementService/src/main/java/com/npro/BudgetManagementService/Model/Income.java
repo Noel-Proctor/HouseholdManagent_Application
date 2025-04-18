@@ -9,10 +9,7 @@ import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.modelmapper.internal.bytebuddy.build.Plugin;
-
 import java.time.LocalDate;
-import java.time.LocalTime;
 
 @Entity
 @Data
@@ -49,6 +46,9 @@ public class Income {
 
     @FutureOrPresent
     private LocalDate updatedOn;
+
+    @Size(min = 1, max = 50, message = "Expense Name must be between 1-50 characters long.")
+    private String name;
 
 
 

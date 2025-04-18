@@ -13,7 +13,6 @@ public class BudgetController {
 
     private final BudgetService budgetService;
 
-
     public BudgetController(BudgetService budgetService) {
         this.budgetService = budgetService;
     }
@@ -75,5 +74,18 @@ public class BudgetController {
     public ResponseEntity<APIResponse> addIncome(@PathVariable String guid, @RequestBody IncomeDTO incomeDTO){
         APIResponse response = budgetService.addIncomeToBudget(guid, incomeDTO);
         return new ResponseEntity<>(response, HttpStatus.CREATED);
+    }
+
+    @PutMapping("income/update/{budgetGuid}")
+    public ResponseEntity<APIResponse> updateIncome(@PathVariable String budgetGuid, @RequestBody IncomeDTO incomeDTO ){
+        APIResponse response = budgetService.updateIncomeOnBudget(budgetGuid, incomeDTO);
+        return ResponseEntity.ok(response);
+    }
+
+    @DeleteMapping("income/remove/{budgetGuid}/{incomeGuid}")
+    public ResponseEntity<APIResponse> deleteIncome(@PathVariable String budgetGuid, @PathVariable String incomeGuid){
+        APIResponse response = budgetService.removeIncomeFromBudget(budgetGuid, incomeGuid);
+        return ResponseEntity.ok(response);
+
     }
 }

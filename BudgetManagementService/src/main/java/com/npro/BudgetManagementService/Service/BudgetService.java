@@ -17,8 +17,9 @@ public interface BudgetService {
     APIResponse updateExpenseOnBudget(String budgetGuid, ExpenseDTO expense);
 
     APIResponse addIncomeToBudget(String budgetGuid, IncomeDTO income);
-    APIResponse removeIncomeFromBudget(String budgetGuid, String incomeGuid);
-    APIResponse updateIncomeOnBudget(String budgetGuid, IncomeDTO income);
 
+    APIResponse removeIncomeFromBudget(String budgetGuid, String incomeGuid);
+
+    APIResponse updateIncomeOnBudget(String budgetGuid, IncomeDTO income);
 
 }

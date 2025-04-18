@@ -7,6 +7,7 @@ import com.npro.BudgetManagementService.Model.Income;
 import com.npro.BudgetManagementService.Payload.*;
 import com.npro.BudgetManagementService.Repositories.BudgetRepository;
 import com.npro.BudgetManagementService.Repositories.ExpenseRepository;
+import com.npro.BudgetManagementService.Repositories.IncomeRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -25,11 +26,13 @@ public class BudgetServiceImpl implements BudgetService {
     private final ModelMapper modelMapper;
     private final BudgetRepository budgetRepository;
     private final ExpenseRepository expenseRepository;
+    private final IncomeRepository incomeRepository;
 
-    public BudgetServiceImpl(ModelMapper modelMapper, BudgetRepository budgetRepository, ExpenseRepository expenseRepository) {
+    public BudgetServiceImpl(ModelMapper modelMapper, BudgetRepository budgetRepository, ExpenseRepository expenseRepository, IncomeRepository incomeRepository) {
         this.modelMapper = modelMapper;
         this.budgetRepository = budgetRepository;
         this.expenseRepository = expenseRepository;
+        this.incomeRepository = incomeRepository;
     }
 
     @Override
@@ -183,14 +186,48 @@ public class BudgetServiceImpl implements BudgetService {
     }
 
     @Override
-    public APIResponse removeIncomeFromBudget(String budgetGuid, String incomeGuid) {
-        return null;
+    public APIResponse updateIncomeOnBudget(String budgetGuid, IncomeDTO incomeDTO) {
+
+        Budget budget = budgetRepository.findByGuid(budgetGuid).orElseThrow(
+                ()-> new NotFoundException("Budget Not Found"));
+
+        Income income = incomeRepository.findByGuid(incomeDTO.getGuid()).orElseThrow(
+                ()-> new NotFoundException("Income Not Found"));
+
+
+        double originalExpenseAmount = income.getAmount();
+        double delta = incomeDTO.getAmount() - originalExpenseAmount;
+        income.setUpdatedOn(LocalDate.now());
+        income.setAmount(incomeDTO.getAmount());
+        income.setDescription(incomeDTO.getDescription());
+        income.setName(incomeDTO.getName());
+
+        incomeRepository.save(income);
+
+        budget.addToTotalIncome(delta);
+        budgetRepository.save(budget);
+
+        return new APIResponse("Income Successfully Updated", true);
+
     }
 
     @Override
-    public APIResponse updateIncomeOnBudget(String budgetGuid, IncomeDTO income) {
-        return null;
-    }
+    public APIResponse removeIncomeFromBudget(String budgetGuid, String incomeGuid) {
 
+        Budget budget = budgetRepository.findByGuid(budgetGuid).orElseThrow(
+                ()-> new NotFoundException("Budget Not Found"));
+
+        Income income = incomeRepository.findByGuid(incomeGuid).orElseThrow(
+                ()-> new NotFoundException("Income Not Found"));
+
+
+        budget.removeIncome(income);
+        budgetRepository.save(budget);
+
+        return new APIResponse("Income Successfully Removed", true);
+
+
+
+    }
 
 }
