@@ -40,12 +40,12 @@ public class Expense {
 
     public void setAmount(
             @NotNull
-            @DecimalMin(value = "0.0", message = "Total value of expense cannot be less that 0.01") Double amount) {
+            @DecimalMin(value = "0.01", message = "Total value of expense cannot be less that 0.01") Double amount) {
         this.amount = amount;
     }
 
     @NotNull
-    @DecimalMin(value = "0.0", message = "Total value of expense cannot be less that 0.01")
+    @DecimalMin(value = "0.01", message = "Total value of expense cannot be less that 0.01")
     private Double amount;
 
     @NotNull

@@ -47,6 +47,7 @@ public class Income {
     @FutureOrPresent
     private LocalDate updatedOn;
 
+    @NotNull
     @Size(min = 1, max = 50, message = "Expense Name must be between 1-50 characters long.")
     private String name;
 

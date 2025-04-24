@@ -10,6 +10,7 @@ import org.junit.jupiter.api.Test;
 
 import java.time.LocalDate;
 import java.util.Set;
+import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -33,6 +34,7 @@ public class ExpenseTest {
         expense.setAmount(50.0);
         expense.setCreatedOn(LocalDate.now());
         expense.setUpdatedOn(LocalDate.now());
+        expense.setGuid(UUID.randomUUID().toString());
 
         Set<ConstraintViolation<Expense>> violations = validator.validate(expense);
         assertTrue(violations.isEmpty(), "There should be no validation errors");
@@ -61,7 +63,7 @@ public class ExpenseTest {
     @Test
     void amountLessThanMin_ShouldFailValidation() {
         Expense expense = buildValidExpense();
-        expense.setAmount(0.0);
+        expense.setAmount(0.00);
 
         Set<ConstraintViolation<Expense>> violations = validator.validate(expense);
         assertFalse(violations.isEmpty());
@@ -97,6 +99,7 @@ public class ExpenseTest {
         e.setAmount(25.00);
         e.setCreatedOn(LocalDate.now());
         e.setUpdatedOn(LocalDate.now());
+        e.setGuid(UUID.randomUUID().toString());
         return e;
     }
 }
